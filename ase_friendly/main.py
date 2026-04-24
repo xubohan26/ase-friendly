@@ -312,7 +312,7 @@ def run_operation(op_info, input_handler, ase_atoms, input_path, output_path, ou
         return
 
     if name == "cell_vec_rearrange_linear_comb":
-        mat_str = input_handler.get_input("Please enter the new cell matrix (flattened 9 numbers). Eg: '1 0 1  0 1 0  -1 0 1' for [a, b, c-a]: ")
+        mat_str = input_handler.get_input("Please enter the new cell matrix (flattened 9 numbers). Eg: '1 0 0  0 1 0  -1 0 1' for [a, b, c-a]: ")
         entries = [float(x) for x in mat_str.split()]
         M = np.array(entries).reshape(3, 3)
         old_cell = ase_atoms.get_cell()
