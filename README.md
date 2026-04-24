@@ -8,7 +8,7 @@ The advantage of ase-friendly is that NO document-reading or memorization on how
 #################################  Example: translating atoms
 
 ```text
-USER: ase-friendly.py 
+USER: ase-friendly 
 
 ASE-FRIENDLY:
 Welcome to [ ase-friendly ]. It manipulates crystal/molecular structures through ASE.
@@ -82,7 +82,6 @@ printf '%s\n' translate zzin.vasp vasp zzout.vasp vasp y "0 0 0.1" | ase-friendl
 ============================================================
 
 [job finished]
-Notice that there is no need to memorize any input format. One can just go along the prompt. Even for automation, one just need to go through the prompt once, and the output would tell you how to automate such operation without the need of the user to backtrack and think about how to pip each input strings.
 ```
 
 ########################## installation
