@@ -98,7 +98,7 @@ printf '%s\n' translate zzin.vasp vasp zzout.vasp vasp y "0 0 0.1" | ase-friendl
 This is the safest method for scientific workflows. It completely isolates the tool and prevents heavy dependencies from messing up your `base` Anaconda system.
 
     # 1. Create and activate a fresh environment with core dependencies AND pip
-    conda create -n ase_env python=3.10 numpy pandas scipy networkx pip
+    conda create -n ase_env -c conda-forge python=3.10 numpy pandas scipy networkx pip
     conda activate ase_env
     # 2. Install ASE via conda-forge (prevents C-library conflicts)
     conda install -c conda-forge ase
