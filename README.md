@@ -1,10 +1,13 @@
 ################################# package description
-This package, ase-friendly, is a user-friendly command line prompt-based tool to manipulate crystal structure such as translate, supercell, sort atom by element, make cell matrix upper or lower diagonal, unwrap_by_bond_connectivity, etc.
+
+This package, ase-friendly, is a user-friendly command line prompt-based tool to manipulate crystal structure such as translate, supercell, sort atom by element, make cell matrix upper or lower diagonal, unwrap_by_bond_connectivity, formate_conversion, etc.
 
 The advantage of ase-friendly is that NO document-reading or memorization on how to use the tool, is required. Users will naturally know how to use the tool through prompts. One can choose to either go along the prompts which requires no memorization, or pip the standard input into the code for automation.
 
 
 #################################  Example: translating atoms
+
+```text
 USER: ase-friendly.py 
 
 ASE-FRIENDLY:
@@ -80,7 +83,7 @@ printf '%s\n' translate zzin.vasp vasp zzout.vasp vasp y "0 0 0.1" | ase-friendl
 
 [job finished]
 Notice that there is no need to memorize any input format. One can just go along the prompt. Even for automation, one just need to go through the prompt once, and the output would tell you how to automate such operation without the need of the user to backtrack and think about how to pip each input strings.
-
+```
 
 ########################## installation
 ### Installation
@@ -102,7 +105,7 @@ This is the safest method for scientific workflows. It completely isolates the t
     conda install -c conda-forge ase
     # 3. Verify that the 'pip' command belongs to your new conda environment
     which pip 
-    # 4. Install ase-friendly directly from GitHub
+    # 4. Install ase-friendly directly from GitHub, using the conda segregated pip
     pip install git+https://github.com/xubohan26/ase-friendly.git
 
 #### Option 3: Conda Base + Direct Executable (Manual Setup)
