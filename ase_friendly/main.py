@@ -30,6 +30,7 @@ from ase_friendly.operation_new.remove_chunk import remove_chunk
 from ase_friendly.operation_new.add_noise_to_atoms import add_noise_to_atoms
 from ase_friendly.operation_new.reorient_1d_structure import reorient_1d_structure
 from ase_friendly.operation_new.fix_atoms_in_or_out_box import fix_atoms_in_or_out_box
+from ase_friendly.operation_new.remove_too_close import remove_too_close
 
 
 
@@ -134,6 +135,7 @@ OPS_3XX = [
     ("super_cell", "super cell; sort atoms or not; eg: '2 2 1' true", 0),
     ("super_cell_partial", "super cell, but only fill one slot", 0), 
     ("combine", "combine; sort atoms or not", 0),
+    ("reverse_super_cell", "undo super cell; shrink cell vec n-fold, keep cartesian, drop duplicates", 0),
 ]
 
 OPS_4XX = [
@@ -149,6 +151,7 @@ OPS_5XX = [#
     ("randomly_replace_atoms", "Randomly replace element with another by num. eg: Si P 2", 0),
     ("remove_chunk", "Remove atoms in the chunk specified by 3 intervals", 0),
     ("add_noise_to_atoms", "add gaussian atom displacements along three axis", 0), 
+    ("remove_too_close", "remove one of the two atoms closer than a cutoff; eg 0.2 Angstrom", 0), 
 ]
 
 OPS_9XX = [#
@@ -447,6 +450,19 @@ def run_operation(op_info, input_handler, ase_atoms, input_path, output_path, ou
         if sort_atoms_bool.lower() in ['true', '1', 't', 'yes', 'y']: ase_atoms=sort_atoms_by_element(ase_atoms)
         ase_atoms.write(output_path, format=output_fmt if output_fmt else None)
         return
+    if name == "reverse_super_cell":
+        div_str = input_handler.get_input("Please enter cell vector divisors (e.g. '2 1 1' shrinks a by 2-fold):")
+        cutoff_str = input_handler.get_input("Please enter distance cutoff in Angstrom to drop the folded duplicates (e.g. 0.2):")
+        div = np.array([int(x) for x in div_str.split()])
+        old_cell = ase_atoms.get_cell()
+        new_cell = old_cell / div[:, np.newaxis]
+        ase_atoms.set_cell(new_cell, scale_atoms=False)  # cartesian coordinates stay fixed
+        ase_atoms.set_scaled_positions(ase_atoms.get_scaled_positions(wrap=False) % 1.0)
+        n_before = len(ase_atoms)
+        ase_atoms = remove_too_close(ase_atoms, cutoff=float(cutoff_str))
+        ase_atoms.write(output_path, format=output_fmt if output_fmt else None)
+        if not input_handler.silence_mode: print(f'{n_before - len(ase_atoms)} of the {n_before} atoms folded onto others and were removed')
+        return
 
     #### 4xx
     if name == "change_cell_entries":
@@ -618,6 +634,13 @@ def run_operation(op_info, input_handler, ase_atoms, input_path, output_path, ou
         axis_2 = [float(x) for x in axis_2_str.split()]
         ase_atoms = add_noise_to_atoms(ase_atoms, std_1=std_1, axis_1=axis_1, std_2=std_2, axis_2=axis_2, std_3=std_3)
         ase_atoms.write(output_path, format=output_fmt if output_fmt else None)
+        return
+    if name == "remove_too_close":
+        cutoff_str = input_handler.get_input("Please enter distance cutoff in Angstrom (e.g. 0.2):")
+        n_before = len(ase_atoms)
+        ase_atoms = remove_too_close(ase_atoms, cutoff=float(cutoff_str))
+        ase_atoms.write(output_path, format=output_fmt if output_fmt else None)
+        if not input_handler.silence_mode: print(f'{n_before - len(ase_atoms)} of the {n_before} atoms were too close and removed')
         return
 
     #9xx
